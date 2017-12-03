@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {GoogleAuthService} from 'ng-gapi';
-import {AuthenticationApiService} from '../../services/authentication-api.service';
+import {AuthenticationService} from '../../services/authentication.service';
 
 @Component({
   selector: 'app-login',
@@ -10,7 +10,7 @@ import {AuthenticationApiService} from '../../services/authentication-api.servic
 export class LoginComponent implements OnInit {
 
   constructor(private googleAuth: GoogleAuthService,
-              private authenticationApi: AuthenticationApiService) {}
+              private authenticationApi: AuthenticationService) {}
 
   ngOnInit() {
   }
@@ -20,10 +20,9 @@ export class LoginComponent implements OnInit {
       .subscribe((auth) => {
         auth.signIn().then(res => {
           const token = res.getAuthResponse().id_token;
-          this.authenticationApi.signIn(token).subscribe((user) => {
-            console.log(user);
-          });
+          this.authenticationApi.signIn(token);
         });
       });
   }
+
 }

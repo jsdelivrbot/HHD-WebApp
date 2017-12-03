@@ -12,8 +12,10 @@ import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {MaterialModule} from './modules/material.module';
 import {NgGapiClientConfig} from './configs/GoogleApiClientConfig';
 import {GoogleApiModule, NG_GAPI_CONFIG} from 'ng-gapi';
-import {AuthenticationApiService} from './services/authentication-api.service';
-import {HttpClientModule} from '@angular/common/http';
+import {AuthenticationService} from './services/authentication.service';
+import {HTTP_INTERCEPTORS, HttpClientModule} from '@angular/common/http';
+import {AuthenticationInterceptor} from './interceptors/authenticationInterceptor';
+import {UserService} from './services/user.service';
 
 const appRoutes: Routes = [
   {path: 'login', component: LoginComponent},
@@ -44,9 +46,13 @@ const gapiClientConfig: NgGapiClientConfig = {
     GoogleApiModule.forRoot({
       provide: NG_GAPI_CONFIG,
       useValue: gapiClientConfig
-    }),
+    })
   ],
-  providers: [AuthenticationApiService],
+  providers: [
+    AuthenticationService,
+    UserService,
+    {provide: HTTP_INTERCEPTORS, useClass: AuthenticationInterceptor, multi: true}
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule {
